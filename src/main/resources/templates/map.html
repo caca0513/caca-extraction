@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Path to the Beginning</title>
+    <style th:inline="text">
+        .mapContainer {
+            display: block;
+            top: 10px;
+            left: 10px;
+            width: [[${map_width}]]px;
+            height: [[${map_height}]]px;
+            border: 2px solid brown;
+            position: relative;
+        }
+
+        .mapContainer div {
+            display: block;
+            position: absolute;
+            border: 1px dashed cadetblue;
+        }
+    </style>
+</head>
+<body>
+<h1><img th:src="@{/images/Waypoints.jpg}" width="100" height="50"/>Let's tangle</h1>
+<span th:inline="text" >[[${map_width}]] X [[${map_height}]]</span>
+<span th:text="${map_width * map_height}">Size</span>
+<div class="mapContainer">
+    <div th:each="wp : ${map.waypoints}"
+         th:style="'top:'+${wp.top*map_height}+'px; left:'+${wp.left*map_width}+'px;  width:'+${(wp.right-wp.left)*map_width}+'px; height:'+${(wp.bottom-wp.top)*map_height}+'px;' ">
+        <span th:text="${wp.content}">Content</span>
+    </div>
+</div>
+</body>
+</html>
