@@ -1,9 +1,9 @@
-package caca.extraction.core.models;
+package caca.extraction.core.models.paddle;
 
 import lombok.Data;
 
 @Data
-public class PaddleResult {
+public class PaddleOCRText {
     private Point lt;
     private Point rt;
     private Point rb;
@@ -12,8 +12,3 @@ public class PaddleResult {
     private String score;
 }
 
-@Data
-class Point{
-    private String x;
-    private String y;
-}
