@@ -14,6 +14,7 @@ import java.util.Objects;
 @SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
 @Entity
+@Table(name = "TREASUREMAP")
 public class TreasureMap {
 
     @Id
@@ -22,7 +23,7 @@ public class TreasureMap {
 
     private String name;
 
-    @OneToMany
+    @OneToMany(mappedBy = "map", fetch = FetchType.EAGER)
     @ToString.Exclude
     private List<Area> waypoints;
 

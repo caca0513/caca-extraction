@@ -4,10 +4,10 @@ CREATE TABLE IF NOT EXISTS Area (
     id identity,
     type VARCHAR(200) NOT NULL,
     content VARCHAR(200) NOT NULL,
-    "left" DOUBLE NOT NULL,
-    "top" DOUBLE NOT NULL,
-    "bottom" DOUBLE NOT NULL,
-    "right" DOUBLE NOT NULL,
+    L DOUBLE NOT NULL,
+    T DOUBLE NOT NULL,
+    B DOUBLE NOT NULL,
+    R DOUBLE NOT NULL,
     TreasureMap_id LONG NOT NULL
 );
 

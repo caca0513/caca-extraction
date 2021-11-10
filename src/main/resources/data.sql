@@ -3,7 +3,7 @@ DELETE FROM TreasureMap;
 
 INSERT INTO TreasureMap (id, name) values (1, 'first');
 
-INSERT INTO Area (id, TreasureMap_id, type, "left", "top", "right", "bottom", content)
+INSERT INTO Area (id, TreasureMap_id, type, L, T, B, R, content)
           VALUES
                 (1, 1, 'Visible', 0.1, 0.1, 0.5,  0.2, 'world'),
                 (2, 1, 'Visible', 0.6, 0.1, 1.0,  0.2, 'hello'),

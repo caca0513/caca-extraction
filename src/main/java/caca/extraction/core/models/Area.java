@@ -20,9 +20,17 @@ public class Area {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @Column(name = "L")
     private final double left;
+    @Column(name = "T")
     private final double top;
+    @Column(name = "B")
     private final double right;
+    @Column(name = "R")
     private final double bottom;
+
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "TREASUREMAP_ID", nullable = false)
+    private TreasureMap map;
 }
 
