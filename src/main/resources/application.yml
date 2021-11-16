@@ -2,8 +2,11 @@ spring:
   thymeleaf:
     cache: false
 
+  application:
+    name: path-finder
+
   datasource:
-    url: jdbc:h2:./temp/test;AUTO_SERVER=TRUE
+    url: jdbc:h2:E:/Projects/Java/DB/H2/test;AUTO_SERVER=TRUE
 
   jpa:
     show-sql: true
@@ -15,3 +18,8 @@ spring:
     console:
       enabled: false
       path: /h2
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:9000/eureka
