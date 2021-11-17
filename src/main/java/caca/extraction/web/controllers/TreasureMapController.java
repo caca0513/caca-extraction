@@ -68,8 +68,8 @@ public class TreasureMapController {
     }
 
     private TreasureMap ConvertCoordinate(TreasureMap map) {
-        var max_width = map.getWaypoints().stream().map(wp -> wp.getRight()).max(Comparators.comparable()).get();
-        var max_height = map.getWaypoints().stream().map(wp -> wp.getRight()).max(Comparators.comparable()).get();
+        double max_width = map.getWaypoints().stream().map(Area::getRight).max(Comparators.comparable()).orElseGet(()->(double)options.getWidth());
+        double max_height = map.getWaypoints().stream().map(Area::getBottom).max(Comparators.comparable()).orElseGet(()->(double)options.getHeight());
 
         var newMap = TreasureMap.builder()
                 .id(map.getId())

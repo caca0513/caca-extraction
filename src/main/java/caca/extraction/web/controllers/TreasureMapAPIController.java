@@ -54,9 +54,9 @@ public class TreasureMapAPIController {
 
         var map = sorie.load(name);
 
-//        map.setName(name);
-//        mapRepo.save(map);
-//        map = mapRepo.getById(map.getId());
+        map.setName(name);
+        mapRepo.save(map);
+        map = mapRepo.getById(map.getId());
 
         return map;
     }

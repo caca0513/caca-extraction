@@ -33,19 +33,18 @@ public class BeanConfiguration {
         var tz = timeZoneIDs[random.nextInt(timeZoneIDs.length)];
 
         var result = RequestParameters.builder()
-                .height(600)
-                .width(800)
+                .width(600).height(900)
                 .timezone(tz)
                 .build();
         return result;
     }
 
-    @Bean(name="paddle")
+    @Bean(name = "paddle")
     public MapLoader<Path> paddle() {
         return new PaddleSourceLoader();
     }
 
-    @Bean(name="sorie")
+    @Bean(name = "sorie")
     public MapLoader<String> sorie(SORIELoaderParameters parameters) {
         return new SORIELoader(parameters);
     }
