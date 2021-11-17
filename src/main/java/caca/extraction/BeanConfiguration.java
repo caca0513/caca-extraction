@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.annotation.RequestScope;
 
+import java.nio.file.Path;
 import java.time.ZoneId;
 import java.util.Random;
 
@@ -39,13 +40,13 @@ public class BeanConfiguration {
         return result;
     }
 
-    @Bean
-    public MapLoader paddle() {
+    @Bean(name="paddle")
+    public MapLoader<Path> paddle() {
         return new PaddleSourceLoader();
     }
 
-    @Bean
-    public MapLoader sorie(SORIELoaderParameters parameters) {
+    @Bean(name="sorie")
+    public MapLoader<String> sorie(SORIELoaderParameters parameters) {
         return new SORIELoader(parameters);
     }
 }
