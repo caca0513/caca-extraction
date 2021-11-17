@@ -1,11 +1,13 @@
 package caca.extraction;
 
+import caca.extraction.core.service.MapLoader;
+import caca.extraction.core.service.impl.PaddleSourceLoader;
+import caca.extraction.core.service.impl.SORIELoader;
+import caca.extraction.core.service.impl.SORIELoaderParameters;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Scope;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.annotation.RequestScope;
 
 import java.time.ZoneId;
@@ -36,4 +38,15 @@ public class BeanConfiguration {
                 .build();
         return result;
     }
+
+    @Bean
+    public MapLoader paddle() {
+        return new PaddleSourceLoader();
+    }
+
+    @Bean
+    public MapLoader sorie(SORIELoaderParameters parameters) {
+        return new SORIELoader(parameters);
+    }
 }
+

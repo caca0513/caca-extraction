@@ -1,32 +1,36 @@
 package caca.extraction.web.controllers;
 
-import caca.extraction.core.models.paddle.PaddleOCRText;
 import caca.extraction.core.models.TreasureMap;
-import caca.extraction.core.models.Visible;
 import caca.extraction.core.repo.TreasureMapRepo;
-import com.alibaba.fastjson.JSON;
+import caca.extraction.core.service.MapLoader;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.Resource;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
 
 @RestController
+@AllArgsConstructor
 @Slf4j
 @RequestMapping(value = "/map", produces = "application/json")
 public class TreasureMapAPIController {
 
-    @Autowired
     private TreasureMapRepo mapRepo;
+    @Resource(name = "paddle")
+    private MapLoader<Path> paddle;
 
-    @GetMapping(value = "/add")
-    public TreasureMap add(String name) throws IOException {
+    @Resource(name = "sorie")
+    private MapLoader<String> sorie;
+
+    @GetMapping(value = "/add/paddle/{name}")
+    public TreasureMap addPaddle(@PathVariable String name) {
         var p = Paths.get(name);
         if (Files.isRegularFile(p)) {
             log.info("File found: " + p.toAbsolutePath());
@@ -35,31 +39,27 @@ public class TreasureMapAPIController {
             return null;
         }
 
-        var content = Files.readString(p);
-        var result = JSON.parseArray(content, PaddleOCRText.class);
+        var map = paddle.load(p);
 
-        var map = Convert(result);
         map.setName(name);
         mapRepo.save(map);
 
         map = mapRepo.getById(map.getId());
+        return map;
+    }
+
+
+    @GetMapping(value = "/add/sorie/{name}")
+    public TreasureMap addSORIE(@PathVariable String name) {
+
+        var map = sorie.load(name);
+
+//        map.setName(name);
+//        mapRepo.save(map);
+//        map = mapRepo.getById(map.getId());
 
         return map;
     }
 
-    public TreasureMap Convert(List<PaddleOCRText> ocrTexts){
-        var map = TreasureMap.builder().waypoints(new ArrayList<>()).build();
-        for (var text : ocrTexts             ) {
-            var vis = Visible.builder()
-                    .map(map)
-                    .content(text.getText())
-                    .left(Double.parseDouble(text.getLt().getX()))
-                    .top(Double.parseDouble(text.getLt().getY()))
-                    .right(Double.parseDouble(text.getRb().getX()))
-                    .bottom(Double.parseDouble(text.getRb().getY()))
-                    .build();
-            map.getWaypoints().add(vis);
-        }
-        return map;
-    }
+
 }
