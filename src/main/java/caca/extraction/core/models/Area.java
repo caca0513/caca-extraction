@@ -34,7 +34,7 @@ public class Area {
     private TreasureMap map;
 
     public double size() {
-        return (right - left) * (bottom - top);
+        return Math.abs((right - left) * (bottom - top)) * ((right < left || bottom < top) ? -1 : 1);
     }
 }
 
