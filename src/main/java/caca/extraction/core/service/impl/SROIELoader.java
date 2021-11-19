@@ -13,12 +13,12 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 @Service
-public class SORIELoader implements MapLoader<String> {
+public class SROIELoader implements MapLoader<String> {
 
     private String ocrFolder;
     private String annotationFolder;
 
-    public SORIELoader(SORIELoaderParameters parameters) {
+    public SROIELoader(SROIELoaderParameters parameters) {
         this.ocrFolder = parameters.getOCRFolder();
         this.annotationFolder = parameters.getAnnotationFolder();
     }

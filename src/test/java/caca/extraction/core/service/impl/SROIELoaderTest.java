@@ -10,7 +10,7 @@ import org.springframework.util.Assert;
 import javax.annotation.Resource;
 
 @SpringBootTest(classes = {PathFinderApplication.class})
-class SORIELoaderTest {
+class SROIELoaderTest {
 
     @Resource(name = "sorie")
     private MapLoader<String> loader;

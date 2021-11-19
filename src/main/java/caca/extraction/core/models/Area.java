@@ -12,15 +12,11 @@ import javax.persistence.*;
 @Setter
 @ToString
 @RequiredArgsConstructor
-@NoArgsConstructor(access= AccessLevel.PROTECTED, force = true)
+@NoArgsConstructor(access = AccessLevel.PROTECTED, force = true)
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.STRING)
 public class Area {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
     @Column(name = "L")
     private final double left;
     @Column(name = "T")
@@ -29,10 +25,16 @@ public class Area {
     private final double right;
     @Column(name = "R")
     private final double bottom;
-
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "TREASUREMAP_ID", nullable = false)
     @JsonIgnore
     private TreasureMap map;
+
+    public double size() {
+        return (right - left) * (bottom - top);
+    }
 }
 

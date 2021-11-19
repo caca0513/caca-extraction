@@ -2,8 +2,8 @@ package caca.extraction;
 
 import caca.extraction.core.service.MapLoader;
 import caca.extraction.core.service.impl.PaddleSourceLoader;
-import caca.extraction.core.service.impl.SORIELoader;
-import caca.extraction.core.service.impl.SORIELoaderParameters;
+import caca.extraction.core.service.impl.SROIELoader;
+import caca.extraction.core.service.impl.SROIELoaderParameters;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -45,8 +45,8 @@ public class BeanConfiguration {
     }
 
     @Bean(name = "sorie")
-    public MapLoader<String> sorie(SORIELoaderParameters parameters) {
-        return new SORIELoader(parameters);
+    public MapLoader<String> sorie(SROIELoaderParameters parameters) {
+        return new SROIELoader(parameters);
     }
 }
 
