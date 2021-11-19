@@ -23,8 +23,13 @@ eureka:
   client:
     service-url:
       defaultZone: http://localhost:9000/eureka
+    register-with-eureka: false
 
 maploader:
   sorie:
     ocr-folder: E:\ML-Data\SROIE2019\0325updated.task1train(626p)
     annotation-folder: E:\ML-Data\SROIE2019\0325updated.task2train(626p)
+
+instruction:
+  repo:
+    folder: E:\Projects\Java\TreasureHunting\Instructions

@@ -1,7 +1,6 @@
 package caca.extraction.web.controllers;
 
 import caca.extraction.RequestParameters;
-import caca.extraction.core.Indicators;
 import caca.extraction.core.models.Area;
 import caca.extraction.core.models.TreasureMap;
 import caca.extraction.core.models.Visible;
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
-import java.util.List;
 
 @Slf4j
 @Controller
