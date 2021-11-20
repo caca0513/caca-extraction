@@ -1,7 +1,5 @@
 package caca.extraction.core.hunting.actions;
 
-
-import caca.extraction.core.hunting.Memo;
 import caca.extraction.core.models.Area;
 import caca.extraction.core.models.TreasureMap;
 
@@ -14,10 +12,11 @@ public class DefineAction extends Action {
     }
 
     @Override
-    public void act(Area targetArea, Memo memo, TreasureMap map) {
-        if (memo.getAnchors().containsKey(getVariable()))
-            memo.getAnchors().get(getVariable()).add(targetArea);
-        else
-            memo.getAnchors().put(getVariable(), List.of(targetArea));
+    public List<Area> act(Area targetArea, TreasureMap map) {
+//        if (memo.getAnchors().containsKey(getVariable()))
+//            memo.getAnchors().get(getVariable()).add(targetArea);
+//        else
+//            memo.getAnchors().put(getVariable(), List.of(targetArea));
+        return List.of(targetArea);
     }
 }

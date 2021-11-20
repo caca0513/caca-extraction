@@ -26,9 +26,11 @@ class SROIELoaderTest {
         Assert.isTrue(wp1 instanceof Visible, "waypoint 1 should be Visible");
         Assert.isTrue(((Visible) wp1).getContent().equals("LIAN HING STATIONERY SDN BHD"), "should be match");
         Assert.isTrue(wp1.getId() == null, "should be match");
-        Assert.isTrue(wp1.getLeft() == 150.0, "should be match");
-        Assert.isTrue(wp1.getTop() == 133.0, "should be match");
-        Assert.isTrue(wp1.getRight() == 472.0, "should be match");
-        Assert.isTrue(wp1.getBottom() == 154.0, "should be match");
+        //the load function should convert the position into relative figure,
+        //relate to the maximum width/height of origin image
+        Assert.isTrue(wp1.getLeft() == 150.0/525.0, "should be match");
+        Assert.isTrue(wp1.getTop() == 133.0/910.0, "should be match");
+        Assert.isTrue(wp1.getRight() == 472.0/525.0, "should be match");
+        Assert.isTrue(wp1.getBottom() == 154.0/910.0, "should be match");
     }
 }

@@ -38,8 +38,4 @@ class AreasTest {
                 && area1.getBottom() == area2.getBottom()
                 ;
     }
-
-    @Test
-    void isIntersect() {
-    }
 }
