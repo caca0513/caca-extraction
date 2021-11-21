@@ -33,12 +33,21 @@ class HunterTest {
 
         AssertExtractedField(map, hunter, "{Date}", "30/03/2018");
         AssertExtractedField(map, hunter, "{total}", "159.00");
+        AssertExtractedField(map, hunter, "{company}", "LIAN HING STATIONERY SDN BHD");
     }
 
     private void AssertExtractedField(TreasureMap map, Hunter hunter, String field, String expectation) {
         var data = hunter.open(field, map);
-        Assert.isTrue(data.size()==1, "only one "+ field + " should be found");
+        AssertEqual(data.size(), 1, field);
         Assert.isTrue(data.get(0) instanceof Visible, "the found "+ field + " should be an Visible");
-        Assert.isTrue(((Visible) data.get(0)).getContent().equals(expectation), "the found "+ field + " should be " + expectation);
+        AssertEqual(((Visible) data.get(0)).getContent(), expectation, field);
+    }
+
+    private <T> void AssertEqual(T actual , T expected, String fieldName){
+        if (fieldName==null || fieldName.trim().isEmpty())
+            fieldName = "";
+        else
+            fieldName =String.format("For field: %s, ", fieldName);
+        Assert.isTrue(actual.equals(expected), String.format("%sExpected: %s, but actual: %s",fieldName, expected, actual));
     }
 }

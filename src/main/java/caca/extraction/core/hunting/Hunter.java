@@ -31,7 +31,9 @@ public class Hunter {
     }
 
     private void log(String format, Object... args) {
-        logs.add(String.format("%s %s : %s", Calendar.getInstance().getTime(), name, String.format(format, args)));
+        var msg = String.format("%s %s : %s", Calendar.getInstance().getTime(), name, String.format(format, args));
+        logs.add(msg);
+        System.out.println(msg);
     }
 
     public void go() {

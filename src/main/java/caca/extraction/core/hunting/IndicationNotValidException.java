@@ -7,6 +7,6 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @AllArgsConstructor
-public class AnchorNotExistException extends Exception {
-    private String anchorName;
+public class IndicationNotValidException extends Exception {
+    private final String key;
 }

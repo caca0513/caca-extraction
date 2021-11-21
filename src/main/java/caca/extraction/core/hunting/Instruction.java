@@ -20,7 +20,7 @@ public class Instruction {
                 .map(i -> {
                     try {
                         return i.indication(currentAnchors);
-                    } catch (AnchorNotExistException e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                         throw new RuntimeException(e);
                     }

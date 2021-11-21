@@ -18,7 +18,7 @@ import java.util.regex.Pattern;
 public class SROIELoader implements MapLoader<String> {
 
     private static final Pattern _dataPattern = Pattern.compile("(\\d+),(\\d+),(\\d+),(\\d+),(\\d+),(\\d+),(\\d+),(\\d+),(.+)");
-    private String ocrFolder;
+    private final String ocrFolder;
     private String annotationFolder;
 
     public SROIELoader(SROIELoaderParameters parameters) {

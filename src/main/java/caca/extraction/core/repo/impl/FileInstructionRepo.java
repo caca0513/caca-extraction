@@ -25,7 +25,7 @@ public class FileInstructionRepo implements InstructionRepo {
     static String lineNoPattern = "(?<no>\\d+\\. )?";
     static String variablePattern = "(?<variable>\\{.+?\\})";
     static Pattern actionPattern = Pattern.compile(lineNoPattern + "(?<action>(find|is) )" + variablePattern, Pattern.CASE_INSENSITIVE);
-    static Pattern indicatorPattern = Pattern.compile(lineNoPattern + "(?<all>All )?(?<direction>above|below|left|right) to (?<detail>the (top|left|bottom|right) (?<offset>([+\\-])\\d\\.\\d+? of )?)?" + variablePattern, Pattern.CASE_INSENSITIVE);
+    static Pattern indicatorPattern = Pattern.compile(lineNoPattern + "(?<all>All )?(?<direction>above|below|left|right) to (?<detail>the (?<corner>top|left|bottom|right) (?<offset>([+\\-])\\d\\.\\d+?)? of )?" + variablePattern, Pattern.CASE_INSENSITIVE);
     private String folder;
 
     private Instruction convert(String line) {
@@ -75,11 +75,11 @@ public class FileInstructionRepo implements InstructionRepo {
 
         var all = m.group("all");
         var direction = m.group("direction");
-        var detail = m.group("detail");
+        var corner = m.group("corner");
         var offset = m.group("offset");
         var variable = m.group("variable");
 
-        var ind = new Indicator(all, direction, detail, offset, variable);
+        var ind = new Indicator(all, direction, corner, offset, variable);
         result.getIndicators().add(ind);
 
         return true;
