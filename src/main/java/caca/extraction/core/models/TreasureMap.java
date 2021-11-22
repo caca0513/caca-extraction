@@ -39,5 +39,13 @@ public class TreasureMap {
     public int hashCode() {
         return getClass().hashCode();
     }
+
+    public List<Visible> split(Visible vis, String text) {
+        var result = vis.split(text);
+        //replace the origin element with slices
+        waypoints.remove(vis);
+        waypoints.addAll(result);
+        return result;
+    }
 }
 

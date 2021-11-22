@@ -32,7 +32,7 @@ class HunterTest {
             "X51005453802",
             "X51005453804"
     })
-    static void run_inst_X51005453802(String test) {
+    void run_inst_X51005453802(String test) {
         var fn = "X51005453802";
         TestHunting(test, fn);
     }

@@ -37,21 +37,23 @@ public class Hunter {
         log("MY PRECIOUS~~");
         for (int i = 0; i < instructions.size(); i++) {
             var inst = instructions.get(i);
+            var instNo = String.format("%s/%s", i + 1, instructions.size());
             var targetArea = inst.indication(anchors);
             var act = inst.getAction();
-            var finding = act.act(targetArea, map);
+            List<Area> finding = act.act(targetArea, map);
 
-            if (finding.size() == 0) {
+            if (finding.size() == 0 || finding.stream().anyMatch(Objects::isNull)) {
                 //something is wrong
-                log("Can not follow instruction: " + inst);
+                log("%s Can not complete Instruction: %s", instNo, inst);
+                log("%s Anchor not found: %s", instNo, act.getVariable());
                 break;
             } else if (finding.size() == 1) {
                 //usual case
                 var newFinding = finding.get(0);
-                log("instruction completed: %s, new finding %s at %s ", inst, act.getVariable(), newFinding);
+                log("%s instruction completed: %s, new finding %s at %s ", instNo, inst, act.getVariable(), newFinding);
                 anchors.put(act.getVariable(), newFinding);
             } else {
-                log("found %s leads, stop and let's other hunters to help", finding.size());
+                log("%s found %s leads, stop and let's other hunters to help", instNo, finding.size());
                 finding.forEach(newFinding -> hub.recruit(this, newFinding, act.getVariable()).go());
             }
         }
@@ -61,7 +63,7 @@ public class Hunter {
         var targetArea = this.anchors.get(anchorName);
         var target = map.getWaypoints().stream()
                 .filter(wp -> Areas.isIntersect(wp, targetArea))
-                .filter(wp-> wp instanceof Visible)
+                .filter(wp -> wp instanceof Visible)
                 .map(Visible.class::cast)
                 .map(Visible::getContent)
                 .collect(Collectors.toList());
