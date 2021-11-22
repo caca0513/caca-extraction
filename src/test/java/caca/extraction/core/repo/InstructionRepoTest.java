@@ -27,7 +27,10 @@ class InstructionRepoTest {
                 List.of(1, FindAction.class),
                 List.of(1, DefineAction.class),
                 List.of(0, FindAction.class),
-                List.of(1, DefineAction.class)
+                List.of(1, DefineAction.class),
+                List.of(0, FindAction.class),
+                List.of(0, FindAction.class),
+                List.of(2, DefineAction.class)
         );
 
         Assert.isTrue(instructions.size() == expected.size(), "instructions size should not be " + expected.size());

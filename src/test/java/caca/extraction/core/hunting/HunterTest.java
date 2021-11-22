@@ -1,16 +1,18 @@
 package caca.extraction.core.hunting;
 
 import caca.extraction.core.models.TreasureMap;
-import caca.extraction.core.models.Visible;
 import caca.extraction.core.repo.impl.FileInstructionRepo;
 import caca.extraction.core.service.impl.SROIELoader;
 import caca.extraction.core.service.impl.SROIELoaderParameters;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.springframework.util.Assert;
 
 class HunterTest {
+
+    static FileInstructionRepo instRepo;
+    static SROIELoader sroie;
 
     @BeforeAll
     static void setup() {
@@ -24,20 +26,18 @@ class HunterTest {
         instRepo = new FileInstructionRepo();
         instRepo.setFolder(inst_folder);
     }
-    static FileInstructionRepo instRepo;
-    static SROIELoader sroie;
 
     @ParameterizedTest
     @ValueSource(strings = {
             "X51005453802",
             "X51005453804"
     })
-    void run_inst_X51005453802(String test) {
+    static void run_inst_X51005453802(String test) {
         var fn = "X51005453802";
         TestHunting(test, fn);
     }
 
-    private void TestHunting(String test, String instructionSource) {
+    private static void TestHunting(String test, String instructionSource) {
         var insts = instRepo.load(instructionSource);
         var anno = sroie.loadAnnotation(test);
         var map = sroie.load(test);
@@ -52,16 +52,9 @@ class HunterTest {
         AssertExtractedField(map, hunter, "{address}", anno.getAddress());
     }
 
-    private void AssertExtractedField(TreasureMap map, Hunter hunter, String field, String expectation) {
+    private static void AssertExtractedField(TreasureMap map, Hunter hunter, String field, String expectation) {
         var treasure = hunter.open(field, map);
-        AssertEqual(treasure, expectation, field);
+        Assertions.assertThat(treasure).isEqualTo(expectation).withFailMessage(field);
     }
 
-    private <T> void AssertEqual(T actual, T expected, String fieldName) {
-        if (fieldName == null || fieldName.trim().isEmpty())
-            fieldName = "";
-        else
-            fieldName = String.format("For field: %s, ", fieldName);
-        Assert.isTrue(actual.equals(expected), String.format("%sExpected: [%s], but actual: [%s]", fieldName, expected, actual));
-    }
 }
