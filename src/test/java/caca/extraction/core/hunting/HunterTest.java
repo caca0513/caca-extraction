@@ -1,53 +1,67 @@
 package caca.extraction.core.hunting;
 
-import caca.extraction.core.models.Area;
 import caca.extraction.core.models.TreasureMap;
 import caca.extraction.core.models.Visible;
 import caca.extraction.core.repo.impl.FileInstructionRepo;
 import caca.extraction.core.service.impl.SROIELoader;
 import caca.extraction.core.service.impl.SROIELoaderParameters;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.util.Assert;
-
-import java.util.List;
 
 class HunterTest {
 
-    @Test
-    void go() {
-        var fn = "X51005453802.txt";
+    @BeforeAll
+    static void setup() {
         var ocr_folder = "E:\\ML-Data\\SROIE2019\\0325updated.task1train(626p)";
         var anno_folder = "E:\\ML-Data\\SROIE2019\\0325updated.task2train(626p)";
         var inst_folder = "E:\\Projects\\Java\\TreasureHunting\\Instructions";
         var para = new SROIELoaderParameters();
         para.setOCRFolder(ocr_folder);
         para.setAnnotationFolder(anno_folder);
-        var map = new SROIELoader(para).load(fn);
+        sroie = new SROIELoader(para);
+        instRepo = new FileInstructionRepo();
+        instRepo.setFolder(inst_folder);
+    }
+    static FileInstructionRepo instRepo;
+    static SROIELoader sroie;
 
-        var repo = new FileInstructionRepo();
-        repo.setFolder(inst_folder);
-        var insts = repo.load(fn);
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "X51005453802",
+            "X51005453804"
+    })
+    void run_inst_X51005453802(String test) {
+        var fn = "X51005453802";
+        TestHunting(test, fn);
+    }
 
-        var hunter = HunterHub.recruit(map, insts);
+    private void TestHunting(String test, String instructionSource) {
+        var insts = instRepo.load(instructionSource);
+        var anno = sroie.loadAnnotation(test);
+        var map = sroie.load(test);
+
+        var hub = new HunterHub();
+        var hunter = hub.recruit(map, insts);
         hunter.go();
 
-        AssertExtractedField(map, hunter, "{Date}", "30/03/2018");
-        AssertExtractedField(map, hunter, "{total}", "159.00");
-        AssertExtractedField(map, hunter, "{company}", "LIAN HING STATIONERY SDN BHD");
+        AssertExtractedField(map, hunter, "{date}", anno.getDate());
+        AssertExtractedField(map, hunter, "{total}", anno.getTotal());
+        AssertExtractedField(map, hunter, "{company}", anno.getCompany());
+        AssertExtractedField(map, hunter, "{address}", anno.getAddress());
     }
 
     private void AssertExtractedField(TreasureMap map, Hunter hunter, String field, String expectation) {
-        var data = hunter.open(field, map);
-        AssertEqual(data.size(), 1, field);
-        Assert.isTrue(data.get(0) instanceof Visible, "the found "+ field + " should be an Visible");
-        AssertEqual(((Visible) data.get(0)).getContent(), expectation, field);
+        var treasure = hunter.open(field, map);
+        AssertEqual(treasure, expectation, field);
     }
 
-    private <T> void AssertEqual(T actual , T expected, String fieldName){
-        if (fieldName==null || fieldName.trim().isEmpty())
+    private <T> void AssertEqual(T actual, T expected, String fieldName) {
+        if (fieldName == null || fieldName.trim().isEmpty())
             fieldName = "";
         else
-            fieldName =String.format("For field: %s, ", fieldName);
-        Assert.isTrue(actual.equals(expected), String.format("%sExpected: %s, but actual: %s",fieldName, expected, actual));
+            fieldName = String.format("For field: %s, ", fieldName);
+        Assert.isTrue(actual.equals(expected), String.format("%sExpected: [%s], but actual: [%s]", fieldName, expected, actual));
     }
 }

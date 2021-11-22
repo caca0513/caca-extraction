@@ -3,6 +3,7 @@ package caca.extraction.core.hunting;
 import caca.extraction.core.models.Area;
 import caca.extraction.core.models.Areas;
 import caca.extraction.core.models.TreasureMap;
+import caca.extraction.core.models.Visible;
 import lombok.Data;
 
 import java.util.*;
@@ -12,19 +13,15 @@ import java.util.stream.Collectors;
 public class Hunter {
     private final TreasureMap map;
     private final String name;
+    private final HunterHub hub;
     //private final Memo memo;
     private final List<Instruction> instructions;
     private final Map<String, Area> anchors = new HashMap<>();
     private final List<String> logs = new ArrayList<>();
 
-    public Hunter(String name, TreasureMap map, List<Instruction> instructions) {
-//        if (memo==null) {
-//            this.memo = new Memo(this);
-//            this.memo.getAnchors().put("{%OP%}", Areas.OriginPoint);
-//        } else {
-//            this.memo = memo.cloneFor(this);
-//        }
+    public Hunter(HunterHub hub, String name, TreasureMap map, List<Instruction> instructions) {
         anchors.put("{%OP%}", Areas.OriginPoint);
+        this.hub = hub;
         this.name = name;
         this.map = map;
         this.instructions = instructions;
@@ -55,14 +52,20 @@ public class Hunter {
                 anchors.put(act.getVariable(), newFinding);
             } else {
                 log("found %s leads, stop and let's other hunters to help", finding.size());
-                finding.forEach(newFinding -> HunterHub.recruit(this, newFinding, act.getVariable()).go());
+                finding.forEach(newFinding -> hub.recruit(this, newFinding, act.getVariable()).go());
             }
         }
     }
 
-    public List<Area> open(String anchorName, TreasureMap map) {
+    public String open(String anchorName, TreasureMap map) {
         var targetArea = this.anchors.get(anchorName);
-        var target = map.getWaypoints().stream().filter(wp -> Areas.isIntersect(wp, targetArea)).collect(Collectors.toList());
-        return target;
+        var target = map.getWaypoints().stream()
+                .filter(wp -> Areas.isIntersect(wp, targetArea))
+                .filter(wp-> wp instanceof Visible)
+                .map(Visible.class::cast)
+                .map(Visible::getContent)
+                .collect(Collectors.toList());
+        var result = String.join(" ", target);
+        return result;
     }
 }

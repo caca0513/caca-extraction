@@ -1,17 +1,15 @@
 package caca.extraction.core.repo.impl;
 
+import caca.extraction.common.FileHelper;
+import caca.extraction.core.hunting.Indicator;
 import caca.extraction.core.hunting.Instruction;
 import caca.extraction.core.hunting.actions.DefineAction;
 import caca.extraction.core.hunting.actions.FindAction;
-import caca.extraction.core.hunting.Indicator;
 import caca.extraction.core.repo.InstructionRepo;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.List;
 import java.util.Objects;
 import java.util.regex.Pattern;
@@ -86,15 +84,9 @@ public class FileInstructionRepo implements InstructionRepo {
     }
 
     @Override
-    public List<Instruction> load(String path) {
-        List<String> lines;
-        try {
-            lines = Files.readAllLines(Path.of(folder, path));
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-
+    public List<Instruction> load(String source) {
+        var lines = FileHelper.readTxt(folder, source);
+        assert lines != null;
         return lines.stream().map(this::convert)
                 .filter(Objects::nonNull).collect(Collectors.toList());
     }

@@ -22,15 +22,10 @@ public class FindAction extends Action {
                 .filter(Visible.class::isInstance)
                 .filter(wp -> Areas.isIntersect(wp, targetArea))
                 .map(Visible.class::cast)
-                .filter(v -> v.getContent().equals(key))
+                .filter(v -> v.getContent().contains(key))   //use contain for partial match
                 .map(Area.class::cast)
                 .collect(Collectors.toList());
 
-//        if (memo.getAnchors().containsKey(getVariable())) {
-//            memo.getAnchors().get(getVariable()).addAll(anchors);
-//        } else {
-//            memo.getAnchors().put(getVariable(), anchors.stream().map(Area.class::cast).collect(Collectors.toList()));
-//        }
         return anchors;
     }
 }

@@ -1,9 +1,13 @@
 package caca.extraction.core.service.impl;
 
+import caca.extraction.common.FileHelper;
 import caca.extraction.core.models.Area;
+import caca.extraction.core.models.SROIEAnnotation;
 import caca.extraction.core.models.TreasureMap;
 import caca.extraction.core.models.Visible;
+import caca.extraction.core.models.paddle.PaddleOCRText;
 import caca.extraction.core.service.MapLoader;
+import com.alibaba.fastjson.JSON;
 import org.springframework.stereotype.Service;
 import org.springframework.util.comparator.Comparators;
 
@@ -28,13 +32,9 @@ public class SROIELoader implements MapLoader<String> {
 
     @Override
     public TreasureMap load(String source) {
-        List<String> ocrResult;
-        try {
-            ocrResult = Files.readAllLines(Path.of(ocrFolder, source));
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
+
+        List<String> ocrResult = FileHelper.readTxt(ocrFolder, source);
+        assert ocrResult != null;
         var map = Convert(ocrResult);
         return map;
     }
@@ -79,5 +79,19 @@ public class SROIELoader implements MapLoader<String> {
                                 .build()
                 ));
         return map;
+    }
+
+    public SROIEAnnotation loadAnnotation(String source){
+        String content;
+        try {
+            if (!source.toLowerCase().endsWith(".txt"))
+                source += ".txt";
+            content = Files.readString(Path.of(annotationFolder, source));
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+        var result = JSON.parseObject(content, SROIEAnnotation.class);
+        return result;
     }
 }

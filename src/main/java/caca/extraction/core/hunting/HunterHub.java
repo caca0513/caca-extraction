@@ -7,10 +7,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HunterHub {
-    public static final List<Hunter> hunters = new ArrayList<>();
+    public final List<Hunter> hunters = new ArrayList<>();
 
-    public static Hunter recruit(Hunter master, Area lead, String variable) {
+    public Hunter recruit(Hunter master, Area lead, String variable) {
         var result = new Hunter(
+                this,
                 master.getName() + " helper " + hunters.size(),
                 master.getMap(),
                 List.copyOf(master.getInstructions()));
@@ -20,8 +21,8 @@ public class HunterHub {
         return result;
     }
 
-    public static Hunter recruit(TreasureMap map, List<Instruction> insts) {
-        var result = new Hunter("hunter " + hunters.size(), map, insts);
+    public Hunter recruit(TreasureMap map, List<Instruction> insts) {
+        var result = new Hunter(this, "hunter " + hunters.size(), map, insts);
 
         hunters.add(result);
         return result;
