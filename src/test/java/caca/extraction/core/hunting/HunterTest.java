@@ -37,6 +37,19 @@ class HunterTest {
         TestHunting(test, fn);
     }
 
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "X51005361883",
+            "X51005361897",
+            "X51005361898",
+            "X51005361900",
+            "X51005361907",
+    })
+    void run_inst_X51005361883(String test) {
+        var fn = "X51005361883";
+        TestHunting(test, fn);
+    }
+
     private static void TestHunting(String test, String instructionSource) {
         var insts = instRepo.load(instructionSource);
         var anno = sroie.loadAnnotation(test);

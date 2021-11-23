@@ -18,13 +18,21 @@ public class Hunter {
     private final List<Instruction> instructions;
     private final Map<String, Area> anchors = new HashMap<>();
     private final List<String> logs = new ArrayList<>();
+    private final int startStep;
+
+    public Hunter(HunterHub hub, String name, TreasureMap map, List<Instruction> instructions, int startStep) {
+        {
+            anchors.put("{%OP%}", Areas.OriginPoint);
+            this.hub = hub;
+            this.name = name;
+            this.map = map;
+            this.startStep = startStep;
+            this.instructions = instructions;
+        }
+    }
 
     public Hunter(HunterHub hub, String name, TreasureMap map, List<Instruction> instructions) {
-        anchors.put("{%OP%}", Areas.OriginPoint);
-        this.hub = hub;
-        this.name = name;
-        this.map = map;
-        this.instructions = instructions;
+        this(hub, name, map, instructions, 0);
     }
 
     private void log(String format, Object... args) {
@@ -35,7 +43,7 @@ public class Hunter {
 
     public void go() {
         log("MY PRECIOUS~~");
-        for (int i = 0; i < instructions.size(); i++) {
+        for (int i = startStep; i < instructions.size(); i++) {
             var inst = instructions.get(i);
             var instNo = String.format("%s/%s", i + 1, instructions.size());
             var targetArea = inst.indication(anchors);
@@ -53,8 +61,9 @@ public class Hunter {
                 log("%s instruction completed: %s, new finding %s at %s ", instNo, inst, act.getVariable(), newFinding);
                 anchors.put(act.getVariable(), newFinding);
             } else {
-                log("%s found %s leads, stop and let's other hunters to help", instNo, finding.size());
-                finding.forEach(newFinding -> hub.recruit(this, newFinding, act.getVariable()).go());
+                log("%s instruction %s results %s leads, stop and let's other hunters to help", instNo, inst, finding.size());
+                int startStep = i;
+                finding.forEach(newFinding -> hub.recruit(this, newFinding, act.getVariable(), startStep + 1).go());
             }
         }
     }
