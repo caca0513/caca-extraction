@@ -48,7 +48,6 @@ public class TreasureMapAPIController {
         return map;
     }
 
-
     @GetMapping(value = "/add/sorie/{name}")
     public TreasureMap addSORIE(@PathVariable String name) {
 

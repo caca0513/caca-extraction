@@ -5,6 +5,7 @@ import caca.extraction.core.models.Area;
 import caca.extraction.core.models.TreasureMap;
 import caca.extraction.core.models.Visible;
 import caca.extraction.core.repo.TreasureMapRepo;
+import caca.extraction.core.service.MapLoader;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.client.RestTemplate;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 
 @Slf4j
@@ -26,6 +28,8 @@ public class TreasureMapController {
     private TreasureMapRepo mapRepo;
     private RequestParameters options;
     private RestTemplate rest;
+    @Resource(name = "sorie")
+    private MapLoader<String> sorie;
 
     @GetMapping("/{id}")
     public String showMap(@PathVariable Long id, Model model) {
@@ -46,18 +50,16 @@ public class TreasureMapController {
         return "time";
     }
 
-    public void walk(){
+    @GetMapping("sroie/{name}")
+    public String showSROIE(@PathVariable String name, Model model) {
+         var map = sorie.load(name);
 
-//        List<Area> waypoints = new ArrayList<>();
-//        List<Indicators> path = new ArrayList<>();
-//        var startPoint = new Area(0,0,0,0);
-//        for (var indicator : path             ) {
-//            startPoint = indicator.applyOn(startPoint, waypoints);
-//        }
+        //var newMap = ConvertCoordinate(map);
+        model.addAttribute("map", map);
+        model.addAttribute("options", options);
 
-
+        return "map";
     }
-
 
     private String GetDate() {
         log.info("Requesting time in timezone: " + options.getTimezone());

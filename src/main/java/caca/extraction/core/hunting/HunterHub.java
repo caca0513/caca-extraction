@@ -15,6 +15,7 @@ public class HunterHub {
                 master.getName() + " helper " + hunters.size(),
                 master.getMap(),
                 List.copyOf(master.getInstructions()),
+                master.getAnchors(),
                 startStep);
         result.getAnchors().put(variable, lead);
 

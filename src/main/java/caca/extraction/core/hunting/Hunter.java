@@ -20,9 +20,13 @@ public class Hunter {
     private final List<String> logs = new ArrayList<>();
     private final int startStep;
 
-    public Hunter(HunterHub hub, String name, TreasureMap map, List<Instruction> instructions, int startStep) {
+    public Hunter(HunterHub hub, String name, TreasureMap map, List<Instruction> instructions, Map<String, Area> anchors, int startStep) {
         {
-            anchors.put("{%OP%}", Areas.OriginPoint);
+            if (anchors == null) {
+                this.anchors.put("{%OP%}", Areas.OriginPoint);
+            } else {
+                this.anchors.putAll(anchors);
+            }
             this.hub = hub;
             this.name = name;
             this.map = map;
@@ -32,7 +36,7 @@ public class Hunter {
     }
 
     public Hunter(HunterHub hub, String name, TreasureMap map, List<Instruction> instructions) {
-        this(hub, name, map, instructions, 0);
+        this(hub, name, map, instructions, null, 0);
     }
 
     private void log(String format, Object... args) {
@@ -52,18 +56,19 @@ public class Hunter {
 
             if (finding.size() == 0 || finding.stream().anyMatch(Objects::isNull)) {
                 //something is wrong
-                log("%s Can not complete Instruction: %s", instNo, inst);
-                log("%s Anchor not found: %s", instNo, act.getVariable());
+                log ("%s Cannot completed inst: %s, location: %s, target not found: %s", instNo, inst, targetArea, act.getVariable());                log("%s Can not complete Instruction: %s", instNo, inst);
                 break;
             } else if (finding.size() == 1) {
                 //usual case
                 var newFinding = finding.get(0);
-                log("%s instruction completed: %s, new finding %s at %s ", instNo, inst, act.getVariable(), newFinding);
+                log ("%s Completed inst: %s, location: %s, found: %s", instNo, inst, targetArea, newFinding);
                 anchors.put(act.getVariable(), newFinding);
             } else {
-                log("%s instruction %s results %s leads, stop and let's other hunters to help", instNo, inst, finding.size());
+                log ("%s Completed inst: %s, location: %s, found: %s", instNo, inst, targetArea, finding.size());
+                log("Found multiple leads, this one will stop and let's other hunters to help");
                 int startStep = i;
                 finding.forEach(newFinding -> hub.recruit(this, newFinding, act.getVariable(), startStep + 1).go());
+                break;
             }
         }
     }
