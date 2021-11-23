@@ -1,11 +1,13 @@
 package caca.extraction.core.service.impl;
 
+import caca.extraction.core.models.Area;
 import caca.extraction.core.models.TreasureMap;
 import caca.extraction.core.models.Visible;
 import caca.extraction.core.models.paddle.PaddleOCRText;
 import caca.extraction.core.service.MapLoader;
 import com.alibaba.fastjson.JSON;
 import org.springframework.stereotype.Service;
+import org.springframework.util.comparator.Comparators;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -17,7 +19,7 @@ import java.util.List;
 public class PaddleSourceLoader implements MapLoader<Path> {
 
     @Override
-    public TreasureMap load(Path path)  {
+    public TreasureMap load(Path path) {
         String content;
         try {
             content = Files.readString(path);
@@ -30,19 +32,19 @@ public class PaddleSourceLoader implements MapLoader<Path> {
         return map;
     }
 
-    private TreasureMap Convert(List<PaddleOCRText> ocrTexts){
-        var map = TreasureMap.builder().waypoints(new ArrayList<>()).build();
-        for (var text : ocrTexts             ) {
+    private TreasureMap Convert(List<PaddleOCRText> ocrTexts) {
+        var temp = new ArrayList<Visible>();
+        for (var text : ocrTexts) {
             var vis = Visible.builder()
-                    .map(map)
                     .content(text.getText())
                     .left(Double.parseDouble(text.getLt().getX()))
                     .top(Double.parseDouble(text.getLt().getY()))
                     .right(Double.parseDouble(text.getRb().getX()))
                     .bottom(Double.parseDouble(text.getRb().getY()))
                     .build();
-            map.getWaypoints().add(vis);
+            temp.add(vis);
         }
-        return map;
+
+        return TreasureMap.convertToTreasureMap(temp);
     }
 }

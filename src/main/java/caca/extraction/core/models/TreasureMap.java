@@ -3,8 +3,10 @@ package caca.extraction.core.models;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.Hibernate;
+import org.springframework.util.comparator.Comparators;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -22,6 +24,8 @@ public class TreasureMap {
     private Long id;
 
     private String name;
+    private double width;
+    private double height;
 
     @OneToMany(mappedBy = "map", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @ToString.Exclude
@@ -46,6 +50,24 @@ public class TreasureMap {
         waypoints.remove(vis);
         waypoints.addAll(result);
         return result;
+    }
+
+    public static TreasureMap convertToTreasureMap(ArrayList<Visible> temp) {
+        double max_width = temp.stream().map(Area::getRight).max(Comparators.comparable()).orElse(0.0);
+        double max_height = temp.stream().map(Area::getBottom).max(Comparators.comparable()).orElse(0.0);
+
+        var map = TreasureMap.builder().waypoints(new ArrayList<>()).width(max_width).height(max_height).build();
+        temp.forEach(wp ->
+                map.getWaypoints().add(
+                        Visible.builder()
+                                .content(wp.getContent())
+                                .left(wp.getLeft() / max_width)
+                                .right(wp.getRight() / max_width)
+                                .top(wp.getTop() / max_height)
+                                .bottom(wp.getBottom() / max_height)
+                                .build()
+                ));
+        return map;
     }
 }
 

@@ -16,7 +16,7 @@ public class HunterHub {
                 master.getMap(),
                 List.copyOf(master.getInstructions()),
                 master.getAnchors(),
-                startStep);
+                startStep, master.getIntersectThreshold());
         result.getAnchors().put(variable, lead);
 
         hunters.add(result);

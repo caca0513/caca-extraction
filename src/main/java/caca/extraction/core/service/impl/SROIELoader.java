@@ -5,7 +5,6 @@ import caca.extraction.core.models.Area;
 import caca.extraction.core.models.SROIEAnnotation;
 import caca.extraction.core.models.TreasureMap;
 import caca.extraction.core.models.Visible;
-import caca.extraction.core.models.paddle.PaddleOCRText;
 import caca.extraction.core.service.MapLoader;
 import com.alibaba.fastjson.JSON;
 import org.springframework.stereotype.Service;
@@ -64,24 +63,11 @@ public class SROIELoader implements MapLoader<String> {
             temp.add(vis);
         }
 
-        double max_width = temp.stream().map(Area::getRight).max(Comparators.comparable()).orElse(0.0);
-        double max_height = temp.stream().map(Area::getBottom).max(Comparators.comparable()).orElse(0.0);
-
-        var map = TreasureMap.builder().waypoints(new ArrayList<>()).build();
-        temp.forEach(wp ->
-                map.getWaypoints().add(
-                        Visible.builder()
-                                .content(wp.getContent())
-                                .left(wp.getLeft() / max_width)
-                                .right(wp.getRight() / max_width)
-                                .top(wp.getTop() / max_height)
-                                .bottom(wp.getBottom() / max_height)
-                                .build()
-                ));
-        return map;
+        return TreasureMap.convertToTreasureMap(temp);
     }
 
-    public SROIEAnnotation loadAnnotation(String source){
+
+    public SROIEAnnotation loadAnnotation(String source) {
         String content;
         try {
             if (!source.toLowerCase().endsWith(".txt"))

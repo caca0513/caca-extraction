@@ -11,7 +11,7 @@ public class Areas {
         return result.size() > 0 ? result : null;
     }
 
-    private static Area intersect(Area area1, Area area2) {
+    public static Area intersect(Area area1, Area area2) {
         var l = Math.max(area1.getLeft(), area2.getLeft());
         var t = Math.max(area1.getTop(), area2.getTop());
         var r = Math.min(area1.getRight(), area2.getRight());
