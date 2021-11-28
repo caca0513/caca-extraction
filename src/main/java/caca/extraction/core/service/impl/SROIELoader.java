@@ -60,6 +60,11 @@ public class SROIELoader implements MapLoader<String> {
                     .right(r)
                     .bottom(b)
                     .build();
+
+//            var splited = vis.split(" ");
+//            while(splited.size()>1){
+//
+//            }
             temp.add(vis);
         }
 

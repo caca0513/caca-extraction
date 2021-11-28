@@ -15,7 +15,8 @@ Done:
 4. When multiple findings(leads) are found for one instruction, helper hunters will be summoned and each following one lead and advance forward, the original hunter(master) will retire. RIP~
 
 Pending:
-1. finding multiple records / sub transactions
-2. visualize interim states of instruction execution
-3. Given a group of scanned document of the same format, and labelled data (annotation), Auto generate instructions for hunter to find the target field/values 
-4. Auto group document by its format
+1. split words by space
+2. finding multiple records / sub transactions
+3. visualize interim states of instruction execution
+4. Given a group of scanned document of the same format, and labelled data (annotation), Auto generate instructions for hunter to find the target field/values 
+5. Auto group document by its format
