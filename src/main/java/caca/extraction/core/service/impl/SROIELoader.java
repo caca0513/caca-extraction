@@ -16,6 +16,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Service
 public class SROIELoader implements MapLoader<String> {
@@ -40,7 +41,7 @@ public class SROIELoader implements MapLoader<String> {
 
     private TreasureMap Convert(List<String> ocrTexts) {
 
-        var temp = new ArrayList<Visible>();
+        List<Visible> temp = new ArrayList<>();
         for (var line : ocrTexts) {
             var matcher = _dataPattern.matcher(line);
             if (!matcher.matches())
@@ -61,13 +62,10 @@ public class SROIELoader implements MapLoader<String> {
                     .bottom(b)
                     .build();
 
-//            var splited = vis.split(" ");
-//            while(splited.size()>1){
-//
-//            }
-            temp.add(vis);
+            var split = vis.split(" ");
+            temp.addAll(split);
         }
-
+        temp = temp.stream().filter(vis->!vis.getContent().isBlank()).collect(Collectors.toList());
         return TreasureMap.convertToTreasureMap(temp);
     }
 

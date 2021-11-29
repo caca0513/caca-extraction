@@ -52,7 +52,7 @@ public class TreasureMap {
         return result;
     }
 
-    public static TreasureMap convertToTreasureMap(ArrayList<Visible> temp) {
+    public static TreasureMap convertToTreasureMap(List<Visible> temp) {
         double max_width = temp.stream().map(Area::getRight).max(Comparators.comparable()).orElse(0.0);
         double max_height = temp.stream().map(Area::getBottom).max(Comparators.comparable()).orElse(0.0);
 

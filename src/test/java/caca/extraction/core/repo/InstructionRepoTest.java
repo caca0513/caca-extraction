@@ -3,6 +3,7 @@ package caca.extraction.core.repo;
 import caca.extraction.PathFinderApplication;
 import caca.extraction.core.hunting.actions.DefineAction;
 import caca.extraction.core.hunting.actions.FindAction;
+import caca.extraction.core.repo.impl.FileInstructionRepo;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -10,14 +11,16 @@ import org.springframework.util.Assert;
 
 import java.util.List;
 
-@SpringBootTest(classes = {PathFinderApplication.class})
 class InstructionRepoTest {
 
-    @Autowired
-    InstructionRepo repo;
+//    @Autowired
+//    InstructionRepo repo;
 
     @Test
     void testLoad() {
+        var repo = new FileInstructionRepo();
+        repo.setFolder("E:\\Projects\\Java\\TreasureHunting\\Instructions");
+
         var instructions = repo.load("X51005453802.txt");
         Assert.notNull(instructions, "instructions should not be null");
 

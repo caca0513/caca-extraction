@@ -20,6 +20,7 @@ public class Hunter {
     private final List<String> logs = new ArrayList<>();
     private final int startStep;
     private final double intersectThreshold;
+    private HuntingStatusEnum status;
 
     public Hunter(HunterHub hub, String name, TreasureMap map, List<Instruction> instructions, Map<String, Area> anchors, int startStep, double intersectThreshold) {
         {
@@ -34,6 +35,7 @@ public class Hunter {
             this.startStep = startStep;
             this.instructions = instructions;
             this.intersectThreshold = intersectThreshold;
+            this.status = HuntingStatusEnum.Ready;
         }
     }
 
@@ -49,7 +51,10 @@ public class Hunter {
 
     public void go() {
         log("MY PRECIOUS~~");
-        for (int i = startStep; i < instructions.size(); i++) {
+        status = HuntingStatusEnum.Hunting;
+
+        var i = startStep;
+        for (; i < instructions.size(); i++) {
             var inst = instructions.get(i);
             var instNo = String.format("%s/%s", i + 1, instructions.size());
             var targetArea = inst.indication(anchors);
@@ -59,7 +64,7 @@ public class Hunter {
             if (finding.size() == 0 || finding.stream().anyMatch(Objects::isNull)) {
                 //something is wrong
                 log("%s Cannot completed inst: %s, location: %s, target not found: %s", instNo, inst, targetArea, act.getVariable());
-                log("%s Can not complete Instruction: %s", instNo, inst);
+                status = HuntingStatusEnum.Blocked;
                 break;
             } else if (finding.size() == 1) {
                 //usual case
@@ -69,10 +74,15 @@ public class Hunter {
             } else {
                 log("%s Completed inst: %s, location: %s, found: %s", instNo, inst, targetArea, finding.size());
                 log("Found multiple leads, this one will stop and let's other hunters to help");
-                int startStep = i;
-                finding.forEach(newFinding -> hub.recruit(this, newFinding, act.getVariable(), startStep + 1).go());
+                var helperStartStep = i + 1;
+                finding.forEach(newFinding -> hub.recruit(this, newFinding, act.getVariable(), helperStartStep).go());
+                status = HuntingStatusEnum.Halt;
                 break;
             }
+        }
+        if (i == instructions.size()) {
+            //this one run till finished.
+            status = HuntingStatusEnum.Completed;
         }
     }
 

@@ -9,6 +9,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import java.util.stream.Collectors;
+
 class HunterTest {
 
     static FileInstructionRepo instRepo;
@@ -25,6 +27,32 @@ class HunterTest {
         sroie = new SROIELoader(para);
         instRepo = new FileInstructionRepo();
         instRepo.setFolder(inst_folder);
+    }
+
+    private static void TestHunting(String test, String instructionSource) {
+        var insts = instRepo.load(instructionSource);
+        var anno = sroie.loadAnnotation(test);
+        var map = sroie.load(test);
+
+        var hub = new HunterHub();
+        var hunter = hub.recruit(map, insts);
+        hunter.go();
+
+        AssertExtractedField(map, hunter, "{date}", anno.getDate());
+        AssertExtractedField(map, hunter, "{total}", anno.getTotal());
+        AssertExtractedField(map, hunter, "{company}", anno.getCompany());
+        AssertExtractedField(map, hunter, "{address}", anno.getAddress());
+    }
+
+    private static void AssertExtractedField(TreasureMap map, Hunter hunter, String field, String expectation) {
+        var hub = hunter.getHub();
+        var completedHunter = hub.getHunters().stream().filter(ht -> ht.getStatus() == HuntingStatusEnum.Completed).collect(Collectors.toList());
+        Assertions.assertThat(completedHunter).hasSizeGreaterThan(0);
+
+        completedHunter.forEach(ht -> {
+            var treasure = ht.open(field, map);
+            Assertions.assertThat(treasure).withFailMessage(field).isEqualTo(expectation);
+        });
     }
 
     @ParameterizedTest
@@ -48,26 +76,6 @@ class HunterTest {
     void run_inst_X51005361883(String test) {
         var fn = "X51005361883";
         TestHunting(test, fn);
-    }
-
-    private static void TestHunting(String test, String instructionSource) {
-        var insts = instRepo.load(instructionSource);
-        var anno = sroie.loadAnnotation(test);
-        var map = sroie.load(test);
-
-        var hub = new HunterHub();
-        var hunter = hub.recruit(map, insts);
-        hunter.go();
-
-        AssertExtractedField(map, hunter, "{date}", anno.getDate());
-        AssertExtractedField(map, hunter, "{total}", anno.getTotal());
-        AssertExtractedField(map, hunter, "{company}", anno.getCompany());
-        AssertExtractedField(map, hunter, "{address}", anno.getAddress());
-    }
-
-    private static void AssertExtractedField(TreasureMap map, Hunter hunter, String field, String expectation) {
-        var treasure = hunter.open(field, map);
-        Assertions.assertThat(treasure).isEqualTo(expectation).withFailMessage(field);
     }
 
 }
